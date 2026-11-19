@@ -1,0 +1,12 @@
+# Derleme çıktıları
+bin/
+obj/
+*_wpftmp.csproj
+
+# Geçici dosyalar
+*.tmp
+*.user
+.vs/
+
+# İndirilen yardımcı programlar (OpenRGB, PawnIO); depoya girmez
+araclar/

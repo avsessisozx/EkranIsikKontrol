@@ -1,0 +1,132 @@
+<Window x:Class="EkranIsikKontrol.HizliPanel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ekran Işık Kontrol" Width="360" SizeToContent="Height"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
+        ShowInTaskbar="False" Topmost="True" ShowActivated="True"
+        FontFamily="{StaticResource Yazi}" Foreground="{StaticResource Metin}"
+        UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+
+    <Border Background="{StaticResource YanPanel}" BorderBrush="{StaticResource Cizgi}" BorderThickness="1"
+            CornerRadius="12" Padding="18,16" Margin="8">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="18" ShadowDepth="2" Opacity="0.45"/>
+        </Border.Effect>
+        <StackPanel>
+            <!-- Başlık -->
+            <Grid Margin="0,0,0,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock x:Name="MonitorAdi" Text="Monitör aranıyor…" FontSize="15" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="MonitorAlti" Text="" FontSize="11.5" Foreground="{StaticResource SolukMetin}" Margin="0,2,0,0"/>
+                </StackPanel>
+                <Button x:Name="TumAyarlar" Grid.Column="1" Style="{StaticResource TemelDugme}" Padding="10,6"
+                        ToolTip="Tüm ayarlar" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE713;" FontFamily="{StaticResource Simgeler}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text="Tüm ayarlar" Margin="6,0,0,0" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Parlaklık -->
+            <Grid x:Name="ParlaklikSatiri" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="&#xE706;" FontFamily="{StaticResource Simgeler}" FontSize="17" VerticalAlignment="Center"
+                           Foreground="{StaticResource IkincilMetin}" ToolTip="Parlaklık"/>
+                <Slider x:Name="Parlaklik" Grid.Column="1" Minimum="0" Maximum="100" SmallChange="1" LargeChange="10"
+                        VerticalAlignment="Center"/>
+                <TextBlock x:Name="ParlaklikYazi" Grid.Column="2" Text="–" HorizontalAlignment="Right" VerticalAlignment="Center"
+                           FontSize="13"/>
+            </Grid>
+
+            <!-- Kontrast -->
+            <Grid x:Name="KontrastSatiri" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="◐" FontFamily="Segoe UI Symbol" FontSize="16" VerticalAlignment="Center"
+                           Foreground="{StaticResource IkincilMetin}" ToolTip="Kontrast"/>
+                <Slider x:Name="Kontrast" Grid.Column="1" Minimum="0" Maximum="100" SmallChange="1" LargeChange="10"
+                        VerticalAlignment="Center"/>
+                <TextBlock x:Name="KontrastYazi" Grid.Column="2" Text="–" HorizontalAlignment="Right" VerticalAlignment="Center"
+                           FontSize="13"/>
+            </Grid>
+
+            <TextBlock x:Name="DdcUyari" Style="{StaticResource Aciklama}" Margin="0,0,0,10" Visibility="Collapsed"
+                       Text="Bu monitörün parlaklığı yazılımla değiştirilemiyor (DDC/CI kapalı olabilir)."/>
+
+            <Border Height="1" Background="{StaticResource Cizgi}" Margin="0,4,0,12"/>
+
+            <!-- Gece ışığı -->
+            <StackPanel x:Name="GeceBolumu">
+                <CheckBox x:Name="Gece" Style="{StaticResource Anahtar}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE708;" FontFamily="{StaticResource Simgeler}" FontSize="15" VerticalAlignment="Center"
+                                   Foreground="{StaticResource IkincilMetin}"/>
+                        <TextBlock Text="Gece ışığı" Margin="12,0,0,0" FontSize="13.5"/>
+                    </StackPanel>
+                </CheckBox>
+                <Grid Margin="0,10,0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="56"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE9CA;" FontFamily="{StaticResource Simgeler}" FontSize="15" VerticalAlignment="Center"
+                               Foreground="{StaticResource IkincilMetin}" ToolTip="Gece ışığı sıcaklığı"/>
+                    <Slider x:Name="GeceSicaklik" Grid.Column="1" Minimum="1200" Maximum="6500" SmallChange="100" LargeChange="500"
+                            IsDirectionReversed="True" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="GeceSicaklikYazi" Grid.Column="2" Text="–" HorizontalAlignment="Right" VerticalAlignment="Center"
+                               FontSize="13"/>
+                </Grid>
+                <Border Height="1" Background="{StaticResource Cizgi}" Margin="0,8,0,12"/>
+            </StackPanel>
+
+            <!-- Fare ışığı -->
+            <StackPanel x:Name="FareBolumu">
+                <Grid Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE962;" FontFamily="{StaticResource Simgeler}" FontSize="15" VerticalAlignment="Center"
+                               Foreground="{StaticResource IkincilMetin}"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="Fare ışığı" FontSize="13.5" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="FareDurum" Text="" FontSize="11.5" Foreground="{StaticResource SolukMetin}"
+                                   VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+                <WrapPanel x:Name="FareRenkleri" Margin="30,0,0,8"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="40"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="&#xE706;" FontFamily="{StaticResource Simgeler}" FontSize="13" VerticalAlignment="Center"
+                               Foreground="{StaticResource SolukMetin}" ToolTip="Fare ışığı parlaklığı"/>
+                    <Slider x:Name="FareParlaklik" Grid.Column="1" Minimum="0" Maximum="100" SmallChange="1" LargeChange="10"
+                            VerticalAlignment="Center"/>
+                    <TextBlock x:Name="FareParlaklikYazi" Grid.Column="2" Text="–" HorizontalAlignment="Right" VerticalAlignment="Center"
+                               FontSize="13"/>
+                </Grid>
+                <Border Height="1" Background="{StaticResource Cizgi}" Margin="0,12,0,12"/>
+            </StackPanel>
+
+            <!-- Profiller -->
+            <TextBlock Text="Profiller" Style="{StaticResource BolumBasligi}" Margin="0,0,0,8"/>
+            <WrapPanel x:Name="Profiller"/>
+        </StackPanel>
+    </Border>
+</Window>

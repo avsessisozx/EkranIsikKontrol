@@ -1,0 +1,44 @@
+name: Derle
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  derle:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Derle ve birim testlerini çalıştır
+        shell: cmd
+        run: derle.cmd
+
+      - name: ZIP hazırla
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force paket | Out-Null
+          Copy-Item bin\EkranIsikKontrol.exe paket\
+          Copy-Item README.md, LICENSE paket\
+          Compress-Archive -Path paket\* -DestinationPath EkranIsikKontrol.zip -Force
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EkranIsikKontrol
+          path: EkranIsikKontrol.zip
+
+      - name: Sürümü yayınla
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $notlar = if (Test-Path docs\surum-notu.md) { 'docs\surum-notu.md' } else { $null }
+          if ($notlar) { gh release create $env:GITHUB_REF_NAME EkranIsikKontrol.zip --title "Ekran Işık Kontrol $env:GITHUB_REF_NAME" --notes-file $notlar }
+          else { gh release create $env:GITHUB_REF_NAME EkranIsikKontrol.zip --title "Ekran Işık Kontrol $env:GITHUB_REF_NAME" --generate-notes }

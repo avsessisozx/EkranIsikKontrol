@@ -1,0 +1,408 @@
+<Window x:Class="EkranIsikKontrol.AnaPencere"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ekran Işık Kontrol" Width="980" Height="700" MinWidth="820" MinHeight="560"
+        WindowStartupLocation="CenterScreen" Icon="/assets/EkranIsikKontrol.ico"
+        Background="{StaticResource Arkaplan}" Foreground="{StaticResource Metin}"
+        FontFamily="{StaticResource Yazi}" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="Kok">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Yan panel -->
+        <Border Background="{StaticResource YanPanel}" BorderBrush="{StaticResource Cizgi}" BorderThickness="0,0,1,0">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="22,22,0,26">
+                    <Border Width="38" Height="38" CornerRadius="10">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FF9F43" Offset="0"/>
+                                <GradientStop Color="#5B8CFF" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <TextBlock Text="&#xE706;" FontFamily="{StaticResource Simgeler}" FontSize="18" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="Ekran Işık Kontrol" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="YanMonitor" Text="Monitör aranıyor…" FontSize="11.5" Foreground="{StaticResource SolukMetin}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border DockPanel.Dock="Bottom" Background="{StaticResource Kart}" BorderBrush="{StaticResource Cizgi}" BorderThickness="1"
+                        CornerRadius="10" Padding="12,10" Margin="14,0,14,16">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse x:Name="DurumNoktasi" Width="9" Height="9" Fill="{StaticResource Uyari}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="DurumYazisi" Text="Monitör aranıyor…" Margin="8,0,0,0" FontSize="13"/>
+                        </StackPanel>
+                        <TextBlock x:Name="ProfilYazisi" FontSize="12" Foreground="{StaticResource SolukMetin}" Margin="17,4,0,0"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Margin="12,0">
+                    <RadioButton x:Name="MenuMonitor" Style="{StaticResource MenuDugmesi}" Tag="&#xE7F4;" Content="Monitör" IsChecked="True"/>
+                    <RadioButton x:Name="MenuEkran" Style="{StaticResource MenuDugmesi}" Tag="&#xE7F8;" Content="Çözünürlük ve Hz"/>
+                    <RadioButton x:Name="MenuGece" Style="{StaticResource MenuDugmesi}" Tag="&#xE708;" Content="Gece ışığı"/>
+                    <RadioButton x:Name="MenuFare" Style="{StaticResource MenuDugmesi}" Tag="&#xE962;" Content="Fare ışığı"/>
+                    <RadioButton x:Name="MenuProfil" Style="{StaticResource MenuDugmesi}" Tag="&#xE8F1;" Content="Profiller"/>
+                    <RadioButton x:Name="MenuAyar" Style="{StaticResource MenuDugmesi}" Tag="&#xE713;" Content="Ayarlar"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Başlık çubuğu düğmeleri -->
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="5">
+            <Button x:Name="KucultDugmesi" Style="{StaticResource BaslikDugmesi}" Content="&#xE921;"
+                    WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Simge durumuna küçült"/>
+            <Button x:Name="KapatDugmesi" Style="{StaticResource KapatDugmesi}" Content="&#xE8BB;"
+                    WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Kapat (program saatin yanında çalışmaya devam eder)"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Margin="0,40,0,0">
+            <Grid Margin="34,6,34,30">
+
+                <!-- ================= MONİTÖR ================= -->
+                <StackPanel x:Name="SayfaMonitor">
+                    <TextBlock Text="Monitör" Style="{StaticResource SayfaBasligi}"/>
+                    <TextBlock Style="{StaticResource Aciklama}" Margin="0,4,0,20" FontSize="13"
+                               Text="Monitörün kendi ayarları, kablo üzerinden (DDC/CI) değiştirilir. Monitörün menüsünü açmanız gerekmez."/>
+
+                    <Border Style="{StaticResource KartKutusu}" Margin="0,0,0,16" x:Name="MonitorSecimKarti">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Monitör" VerticalAlignment="Center" FontSize="14"/>
+                            <ComboBox x:Name="MonitorListesi" Grid.Column="1"/>
+                            <Button x:Name="YenidenTara" Grid.Column="2" Content="Yeniden tara" Style="{StaticResource TemelDugme}" Margin="12,0,0,0"/>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="DdcYokKarti" Background="{StaticResource UyariZemin}" CornerRadius="12" Padding="16" Margin="0,0,0,16"
+                            Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Bu monitör yazılımla kontrol edilemiyor" FontWeight="SemiBold" Foreground="{StaticResource Uyari}"/>
+                            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource IkincilMetin}" Margin="0,6,0,0" FontSize="12.5"
+                                       Text="Monitörün kendi menüsünde (düğmeleri) “DDC/CI” ayarını açın. Sanal ekranlar ve bazı USB/dock bağlantıları DDC/CI desteklemez."/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource KartKutusu}" Margin="0,0,0,16" x:Name="GoruntuKarti">
+                        <StackPanel>
+                            <TextBlock Text="GÖRÜNTÜ" Style="{StaticResource BolumBasligi}"/>
+                            <Grid Margin="0,4,0,14" x:Name="MParlaklikSatiri">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Parlaklık" VerticalAlignment="Center" FontSize="14"/>
+                                <Slider x:Name="MParlaklik" Grid.Column="1" Minimum="0" Maximum="100" SmallChange="1" LargeChange="10" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="MParlaklikYazi" Grid.Column="2" Text="–" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,14" x:Name="MKontrastSatiri">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Kontrast" VerticalAlignment="Center" FontSize="14"/>
+                                <Slider x:Name="MKontrast" Grid.Column="1" Minimum="0" Maximum="100" SmallChange="1" LargeChange="10" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="MKontrastYazi" Grid.Column="2" Text="–" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14"/>
+                            </Grid>
+                            <Grid x:Name="RenkSatiri">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Renk sıcaklığı" VerticalAlignment="Center" FontSize="14"/>
+                                <ComboBox x:Name="RenkOnAyari" Grid.Column="1" MaxWidth="260" HorizontalAlignment="Left" MinWidth="200"/>
+                            </Grid>
+                            <TextBlock Style="{StaticResource Aciklama}" Margin="160,8,0,0"
+                                       Text="Monitörün kendi renk ayarı. “Kullanıcı” seçeneği monitör menüsündeki kırmızı/yeşil/mavi ayarlarını kullanır."/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource KartKutusu}" Margin="0,0,0,16" x:Name="SesKarti">
+                        <StackPanel>
+                            <TextBlock Text="SES" Style="{StaticResource BolumBasligi}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Monitör hoparlörü" VerticalAlignment="Center" FontSize="14"/>
+                                <Slider x:Name="MSes" Grid.Column="1" Minimum="0" Maximum="100" SmallChange="1" LargeChange="10" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="MSesYazi" Grid.Column="2" Text="–" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14"/>
+                            </Grid>
+                            <TextBlock Style="{StaticResource Aciklama}" Margin="160,8,0,0"
+                                       Text="Monitörün kendi hoparlörü ya da kulaklık çıkışı. Windows ses seviyesini değiştirmez."/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource KartKutusu}" x:Name="GirisKarti">
+                        <StackPanel>
+                            <TextBlock Text="GİRİŞ KAYNAĞI" Style="{StaticResource BolumBasligi}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Şu anki giriş" VerticalAlignment="Center" FontSize="14"/>
+                                <ComboBox x:Name="GirisListesi" Grid.Column="1" MaxWidth="260" HorizontalAlignment="Left" MinWidth="200"/>
+                                <Button x:Name="GirisDegistir" Grid.Column="2" Content="Girişi değiştir" Style="{StaticResource TemelDugme}"/>
+                            </Grid>
+                            <TextBlock Style="{StaticResource Aciklama}" Margin="160,8,0,0"
+                                       Text="Dikkat: bu bilgisayarın bağlı olmadığı bir girişe geçerseniz ekran kararır. Geri dönmek için monitörün kendi düğmelerini kullanmanız gerekir."/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ================= EKRAN ================= -->
+                <StackPanel x:Name="SayfaEkran" Visibility="Collapsed">
+                    <TextBlock Text="Çözünürlük ve yenileme hızı" Style="{StaticResource SayfaBasligi}"/>
+                    <TextBlock Style="{StaticResource Aciklama}" Margin="0,4,0,20" FontSize="13"
+                               Text="Windows'un ekran ayarları. Değişiklikten sonra 15 saniye içinde onaylamazsanız eski ayara dönülür."/>
+
+                    <Border x:Name="OnayKarti" Background="{StaticResource VurguZemin}" BorderBrush="{StaticResource Vurgu}" BorderThickness="1"
+                            CornerRadius="12" Padding="18" Margin="0,0,0,16" Visibility="Collapsed">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Bu ayar kalsın mı?" FontWeight="SemiBold" FontSize="15"/>
+                                <TextBlock x:Name="OnaySayaci" Foreground="{StaticResource IkincilMetin}" Margin="0,4,0,0" FontSize="13"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button x:Name="OnayKalsin" Content="Kalsın" Style="{StaticResource BirincilDugme}" Margin="0,0,8,0"/>
+                                <Button x:Name="OnayGeriAl" Content="Geri al" Style="{StaticResource TemelDugme}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource KartKutusu}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Ekran" VerticalAlignment="Center" FontSize="14"/>
+                                <ComboBox x:Name="EkranListesi" Grid.Column="1" MaxWidth="360" HorizontalAlignment="Left" MinWidth="260"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Çözünürlük" VerticalAlignment="Center" FontSize="14"/>
+                                <ComboBox x:Name="CozunurlukListesi" Grid.Column="1" MaxWidth="260" HorizontalAlignment="Left" MinWidth="200"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Yenileme hızı" VerticalAlignment="Center" FontSize="14"/>
+                                <ComboBox x:Name="HzListesi" Grid.Column="1" MaxWidth="260" HorizontalAlignment="Left" MinWidth="200"/>
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Margin="160,0,0,0">
+                                <Button x:Name="ModUygula" Content="Uygula" Style="{StaticResource BirincilDugme}"/>
+                                <TextBlock x:Name="SimdikiMod" VerticalAlignment="Center" Margin="14,0,0,0" Foreground="{StaticResource SolukMetin}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ================= GECE IŞIĞI ================= -->
+                <StackPanel x:Name="SayfaGece" Visibility="Collapsed">
+                    <TextBlock Text="Gece ışığı" Style="{StaticResource SayfaBasligi}"/>
+                    <TextBlock Style="{StaticResource Aciklama}" Margin="0,4,0,20" FontSize="13"
+                               Text="Windows'un kendi gece ışığı: ekrandaki mavi ışığı azaltır, renkleri sıcaklaştırır."/>
+
+                    <Border x:Name="GeceYokKarti" Background="{StaticResource UyariZemin}" CornerRadius="12" Padding="16" Margin="0,0,0,16"
+                            Visibility="Collapsed">
+                        <TextBlock TextWrapping="Wrap" Foreground="{StaticResource Uyari}"
+                                   Text="Gece ışığı ayarı bulunamadı. Windows Ayarlar → Sistem → Ekran bölümünden gece ışığını bir kez açıp kapatın."/>
+                    </Border>
+
+                    <Border Style="{StaticResource KartKutusu}" x:Name="GeceKarti">
+                        <StackPanel>
+                            <CheckBox x:Name="GGece" Style="{StaticResource Anahtar}" Content="Gece ışığı açık" Margin="0,0,0,18"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="70"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Sıcaklık" VerticalAlignment="Center" FontSize="14"/>
+                                <Grid Grid.Column="1">
+                                    <Border Height="6" CornerRadius="3" VerticalAlignment="Center" Margin="0,0,0,0" Opacity="0.55">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Color="#FFF4E8" Offset="0"/>
+                                                <GradientStop Color="#FFB46B" Offset="0.6"/>
+                                                <GradientStop Color="#FF7A1A" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                    </Border>
+                                    <Slider x:Name="GSicaklik" Minimum="1200" Maximum="6500" SmallChange="100" LargeChange="500"
+                                            IsDirectionReversed="True" VerticalAlignment="Center"/>
+                                </Grid>
+                                <TextBlock x:Name="GSicaklikYazi" Grid.Column="2" Text="–" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14"/>
+                            </Grid>
+                            <Grid Margin="160,4,70,0">
+                                <TextBlock Text="Daha az" FontSize="11.5" Foreground="{StaticResource SolukMetin}"/>
+                                <TextBlock Text="Daha sıcak" FontSize="11.5" Foreground="{StaticResource SolukMetin}" HorizontalAlignment="Right"/>
+                            </Grid>
+                            <TextBlock Style="{StaticResource Aciklama}" Margin="0,18,0,0"
+                                       Text="Windows'ta gece ışığı zamanlaması açıksa, gece ışığı belirlenen saatlerde kendiliğinden de açılıp kapanır."/>
+                            <Button x:Name="WindowsGeceAyarlari" Content="Windows gece ışığı ayarlarını aç" Style="{StaticResource TemelDugme}"
+                                    HorizontalAlignment="Left" Margin="0,12,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ================= FARE IŞIĞI ================= -->
+                <StackPanel x:Name="SayfaFare" Visibility="Collapsed">
+                    <TextBlock Text="Fare ışığı" Style="{StaticResource SayfaBasligi}"/>
+                    <TextBlock Style="{StaticResource Aciklama}" Margin="0,4,0,20" FontSize="13"
+                               Text="SteelSeries Rival 3 farenin ışığı. Arka planda OpenRGB kullanılır; klavyeye ve diğer aygıtlara dokunulmaz."/>
+
+                    <Border Style="{StaticResource KartKutusu}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <CheckBox x:Name="FEtkin" Style="{StaticResource Anahtar}" Content="Fare ışığını bu programdan yönet"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <Ellipse x:Name="FDurumNoktasi" Width="9" Height="9" Fill="{StaticResource SolukMetin}" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="FDurum" Margin="8,0,0,0" FontSize="13" Foreground="{StaticResource IkincilMetin}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Border x:Name="GgUyarisi" Background="{StaticResource UyariZemin}" CornerRadius="10" Padding="12" Margin="0,12,0,0">
+                                <TextBlock TextWrapping="Wrap" FontSize="12.5" Foreground="{StaticResource IkincilMetin}"
+                                           Text="SteelSeries GG da açıksa fare rengini kendi ayarına geri çevirebilir. Öyle olursa GG'de farenin aydınlatmasını kapatın ya da GG'yi kapatın."/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource KartKutusu}" x:Name="FareRenkKarti">
+                        <StackPanel>
+                            <TextBlock Text="RENK" Style="{StaticResource BolumBasligi}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <WrapPanel x:Name="FRenkler" Margin="0,0,0,6"/>
+                                <Border x:Name="FOnizleme" Grid.Column="1" Width="84" Height="84" CornerRadius="42"
+                                        BorderBrush="{StaticResource Cizgi}" BorderThickness="2" VerticalAlignment="Top"/>
+                            </Grid>
+                            <Grid Margin="0,10,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Kırmızı" VerticalAlignment="Center" FontSize="13.5"/>
+                                <Slider x:Name="FR" Grid.Column="1" Minimum="0" Maximum="255" SmallChange="1" LargeChange="16" Margin="0,4"/>
+                                <TextBlock x:Name="FRYazi" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="1" Text="Yeşil" VerticalAlignment="Center" FontSize="13.5"/>
+                                <Slider x:Name="FG" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="255" SmallChange="1" LargeChange="16" Margin="0,4"/>
+                                <TextBlock x:Name="FGYazi" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="2" Text="Mavi" VerticalAlignment="Center" FontSize="13.5"/>
+                                <Slider x:Name="FB" Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="255" SmallChange="1" LargeChange="16" Margin="0,4"/>
+                                <TextBlock x:Name="FBYazi" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="3" Text="Parlaklık" VerticalAlignment="Center" FontSize="13.5" Margin="0,10,0,0"/>
+                                <Slider x:Name="FParlaklik" Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="100" SmallChange="1" LargeChange="10" Margin="0,14,0,4"/>
+                                <TextBlock x:Name="FParlaklikYazi" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                                <TextBlock Grid.Row="4" Text="Renk kodu" VerticalAlignment="Center" FontSize="13.5" Margin="0,10,0,0"/>
+                                <TextBox x:Name="FHex" Grid.Row="4" Grid.Column="1" Width="120" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                            </Grid>
+                            <CheckBox x:Name="FAcilis" Style="{StaticResource Anahtar}" Content="Program açılınca bu rengi uygula" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- ================= PROFİLLER ================= -->
+                <StackPanel x:Name="SayfaProfil" Visibility="Collapsed">
+                    <TextBlock Text="Profiller" Style="{StaticResource SayfaBasligi}"/>
+                    <TextBlock Style="{StaticResource Aciklama}" Margin="0,4,0,20" FontSize="13"
+                               Text="Tek tıkla uygulanan ayar paketleri. Bir profil, kaydedildiği andaki parlaklık, kontrast, renk, gece ışığı ve fare ışığını hatırlar."/>
+
+                    <Border Style="{StaticResource KartKutusu}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="ŞU ANKİ AYARLARI KAYDET" Style="{StaticResource BolumBasligi}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="YeniProfilAdi" Width="240"/>
+                                <Button x:Name="ProfilKaydet" Content="Yeni profil olarak kaydet" Style="{StaticResource BirincilDugme}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel x:Name="ProfilListesi"/>
+                </StackPanel>
+
+                <!-- ================= AYARLAR ================= -->
+                <StackPanel x:Name="SayfaAyar" Visibility="Collapsed">
+                    <TextBlock Text="Ayarlar" Style="{StaticResource SayfaBasligi}"/>
+                    <TextBlock Style="{StaticResource Aciklama}" Margin="0,4,0,20" FontSize="13"
+                               Text="Program saatin yanındaki simgede çalışır. Simgeye tıklayınca hızlı panel, çift tıklayınca bu pencere açılır."/>
+
+                    <Border Style="{StaticResource KartKutusu}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <CheckBox x:Name="WindowsIleBaslat" Style="{StaticResource Anahtar}" Content="Windows açılınca başlat"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource KartKutusu}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="OPENRGB (FARE IŞIĞI İÇİN)" Style="{StaticResource BolumBasligi}"/>
+                            <TextBlock x:Name="OpenRgbYolu" TextWrapping="Wrap" FontSize="12.5" Foreground="{StaticResource IkincilMetin}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <Button x:Name="OpenRgbSec" Content="OpenRGB.exe seç…" Style="{StaticResource TemelDugme}"/>
+                                <Button x:Name="OpenRgbSifirla" Content="Otomatik bul" Style="{StaticResource TemelDugme}" Margin="8,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource KartKutusu}">
+                        <StackPanel>
+                            <TextBlock Text="SORUN BİLDİRME" Style="{StaticResource BolumBasligi}"/>
+                            <TextBlock Style="{StaticResource Aciklama}" FontSize="12.5"
+                                       Text="Bir şey çalışmazsa raporu kopyalayıp sohbete yapıştırın. Rapor monitör, ekran, gece ışığı ve fare bilgisini ve son günlük satırlarını içerir."/>
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <Button x:Name="RaporKopyala" Content="Hata raporunu kopyala" Style="{StaticResource BirincilDugme}"/>
+                                <Button x:Name="GunlukAc" Content="Günlük klasörünü aç" Style="{StaticResource TemelDugme}" Margin="8,0,0,0"/>
+                            </StackPanel>
+                            <TextBlock x:Name="RaporDurumu" FontSize="12" Foreground="{StaticResource Basari}" Margin="0,8,0,0"/>
+                            <TextBlock x:Name="SurumYazisi" FontSize="12" Foreground="{StaticResource SolukMetin}" Margin="0,14,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Button x:Name="ProgramdanCik" Content="Programdan çık" Style="{StaticResource TehlikeDugme}" HorizontalAlignment="Left" Margin="0,16,0,0"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>
